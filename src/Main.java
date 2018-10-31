@@ -14,9 +14,9 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         CharactersLab charactersLab = CharactersLab.get();
-        int readedChar;
+        /*int readedChar;
         try (FileReader finFullText = new FileReader("res/Voina_i_mir.txt");
-             FileReader finChapterText = new FileReader("res/Tom 1 Chapter 9.txt")){
+             FileReader finChapterText = new FileReader("res/test.txt")){
             do {
                 readedChar = finFullText.read();
                 if (readedChar != -1) {
@@ -33,13 +33,22 @@ public class Main {
         } catch (IOException e){
             e.printStackTrace();
         }
+        */
+
+        main.readText("res/Voina_i_mir.txt", charactersLab.originalFullText);
+        main.readText("res/test.txt", charactersLab.originalChapterText);
+
+        charactersLab.setDataOfText(charactersLab.originalFullText,
+                charactersLab.numOfAllTextChars,
+                charactersLab.numOfEveryTextChar,
+                charactersLab.mapFullCharacterInteger,
+                true);
+
+
 
         // Работа по символам оригинального текста всего произведения
-        charactersLab.toLowerOriginalText = charactersLab.originalFullText.toString().toLowerCase();
-        main.setNumOfAllTextChars(charactersLab.toLowerOriginalText);
-        System.out.println("Num of all chars: " + charactersLab.getNumOfAllTextChars());
+        /*System.out.println("Num of all chars: " + charactersLab.getNumOfAllTextChars());
 
-        main.setNumOfEveryChar(charactersLab.toLowerOriginalText, charactersLab.numOfEveryTextChar, charactersLab.mapFullCharacterInteger);
         main.setFreqMap(charactersLab.mapFullCharacterFreq, charactersLab.numOfEveryTextChar, charactersLab.numOfAllTextChars);
         main.setValueMap(charactersLab.mapFullCharacterFreq, charactersLab.mapTextFreqCharacter);
 
@@ -51,9 +60,6 @@ public class Main {
         System.out.println("///////////////////////////////////////////////////");
 
         // Работа с символами главы произведения
-        charactersLab.toLowerChapterText = charactersLab.originalChapterText.toString().toLowerCase();
-        main.setNumOfAllChapterChars(charactersLab.toLowerChapterText);
-        main.setNumOfEveryChar(charactersLab.toLowerChapterText, charactersLab.numOfEveryChapterChar, charactersLab.mapChapterCharacterInteger);
         main.setFreqMap(charactersLab.mapChapterFreq, charactersLab.numOfEveryChapterChar, charactersLab.numOfAllChapterChars);
         main.setValueMap(charactersLab.mapChapterFreq, charactersLab.mapFreqChapter);
 
@@ -73,9 +79,6 @@ public class Main {
         System.out.println("///////////////////////////////////////////////////");
 
         // Работа с символами зашифрованного текста
-        charactersLab.toLowerEncryptedChapterText = charactersLab.encryptedText.toString().toLowerCase();
-        main.setNumOfAllEncryptedChapterChars(charactersLab.toLowerEncryptedChapterText);
-        main.setNumOfEveryChar(charactersLab.toLowerEncryptedChapterText, charactersLab.numOfEveryEncryptedChapterChar, charactersLab.mapEncryptedCharacterInteger);
         main.setFreqMap(charactersLab.mapEncryptedChapterFreq, charactersLab.numOfEveryEncryptedChapterChar, charactersLab.numOfAllEncryptedChapterChars);
         main.setValueMap(charactersLab.mapEncryptedChapterFreq, charactersLab.mapEncryptedFreqChapter);
 
@@ -102,67 +105,14 @@ public class Main {
         } catch (IOException e){
             e.printStackTrace();
         }
-        /*
-        charactersLab.setMapBigramInteger(charactersLab.mapFullBigramInteger);
-        charactersLab.setMapBigramInteger(charactersLab.mapEncryptedBigramInteger);
-        main.setNumOfEveryBigram(charactersLab.mapFullBigramInteger, charactersLab.numOfEveryFullBigram);
-        main.setNumOfEveryBigram(charactersLab.mapEncryptedBigramInteger, charactersLab.numOfEveryEncryptBigram);
-        charactersLab.setMapBigramFloat(charactersLab.mapFullBigramFreq);
-        charactersLab.setMapBigramFloat(charactersLab.mapEncryptedBigramFreq);
-        main.setBigramsInteger(charactersLab.toLowerOriginalText, charactersLab.getMapFullBigramInteger(), charactersLab.numOfAllTextBigrams);
-        main.setBigramsInteger(charactersLab.toLowerEncryptedChapterText, charactersLab.getMapEncryptedBigramInteger(), charactersLab.numOfAllEncryptedBigrams);
-        main.setBigramFreq(charactersLab.mapFullBigramInteger, charactersLab.numOfAllTextBigrams, charactersLab.numOfEveryFullBigram);
-        main.setBigramFreq(charactersLab.mapEncryptedBigramInteger, charactersLab.numOfAllEncryptedBigrams, charactersLab.numOfEveryEncryptBigram);
+
+        main.checkText(charactersLab.originalChapterText, charactersLab.decryptedText);
+
         */
 
    }
 
 
-    private void setNumOfAllTextChars(@NotNull String text){
-        for (int i = 0; i < text.length(); i++){
-            for (char c = 'а'; c <= 'я'; c++){
-                if (c == text.charAt(i)){
-                    CharactersLab.get().numOfAllTextChars++;
-                    break;
-                }
-            }
-        }
-    }
-
-    private void setNumOfAllChapterChars(@NotNull String text){
-        for (int i = 0; i < text.length(); i++){
-            for (char c = 'а'; c <= 'я'; c++){
-                if (c == text.charAt(i)){
-                    CharactersLab.get().numOfAllChapterChars++;
-                    break;
-                }
-            }
-        }
-    }
-
-    private void setNumOfAllEncryptedChapterChars(@NotNull String text){
-        for (int i = 0; i < text.length(); i++){
-            for (char c = 'а'; c <= 'я'; c++){
-                if (c == text.charAt(i)){
-                    CharactersLab.get().numOfAllEncryptedChapterChars++;
-                    break;
-                }
-            }
-        }
-    }
-
-    private void setNumOfEveryChar(@NotNull String text, int[] numOfEveryChar, Map mapCharInt){
-        int j = 0;
-        for (char c = 'а'; c <= 'я'; c++){
-            for (int i = 0; i < text.length(); i++){
-                if (c == text.charAt(i)){
-                    numOfEveryChar[j]++;
-                }
-            }
-            mapCharInt.put(c, numOfEveryChar[j]);
-            j++;
-        }
-    }
 
     private void getNumOfEveryChar(Map map, boolean startPrintLoop) {
         if (startPrintLoop) {
@@ -222,7 +172,7 @@ public class Main {
     }
 
     private void encryptCaesar(StringBuilder originalChapterText, char[] originalAlphabet ,char[] newAlphabet){
-        CharactersLab.get().encryptedText = originalChapterText;
+        CharactersLab.get().encryptedText.append(originalChapterText.toString());
         Character character;
         for (int i = 0; i < originalChapterText.length(); i++){
             for (int j = 0; j < newAlphabet.length; j++){
@@ -254,6 +204,10 @@ public class Main {
     private void setDecryptedFreqAlphabet(Map mapFreqFullText, Map mapFreqEncryptedText, char[] decryptedFreqAlphabet, char[] originalAlphabet){
         ArrayList<Float> alFreqFullText = new ArrayList<>(mapFreqFullText.keySet());
         ArrayList<Float> alFreqEncryptedText = new ArrayList<>(mapFreqEncryptedText.keySet());
+        ArrayList<Float> firstMap = new ArrayList<>(CharactersLab.get().mapEncryptedChapterFreq.values());
+        Map<Float, Character> secondMap = CharactersLab.get().mapEncryptedFreqChapter;
+        ArrayList<Character> alFullTest = new ArrayList<>(mapFreqEncryptedText.values());
+        ArrayList<Character> alEncTest = new ArrayList<>(CharactersLab.get().mapEncryptedChapterFreq.keySet());
         float tmpMin = Math.abs(alFreqEncryptedText.get(0) - alFreqFullText.get(0));
         int indexOfMin = 0;
         for (int i = 0; i < decryptedFreqAlphabet.length;i++) {
@@ -300,55 +254,40 @@ public class Main {
         }
     }
 
-    private void setBigramsInteger(@NotNull String text, Map mapBigramInteger, int fullBigramsInteger){
-        ArrayList<String> alBigramKeys = new ArrayList<>(mapBigramInteger.keySet());
-        Integer bigramIntegerCounter = 0;
-        fullBigramsInteger = 0;
-        int j = 2;
-        for (int i = 0; i < text.length(); i++, j++) {
-            try {
-                for (String string : alBigramKeys) {
-                    if (text.substring(i, j).equals(string)) {
-                        fullBigramsInteger++;
-                        bigramIntegerCounter = (Integer) mapBigramInteger.get(string);
-                        bigramIntegerCounter++;
-                        mapBigramInteger.replace(string, bigramIntegerCounter);
-                        break;
+    private void checkText(StringBuilder originalChapterText, StringBuilder decryptedText){
+        String checkOriginalText = originalChapterText.toString().toLowerCase();
+        String checkDecryptedText = decryptedText.toString().toLowerCase();
+        int numOfGoodChars = 0;
+        int textLength = 0;
+        float percent;
+        for (int i = 0; i < checkOriginalText.length(); i++){
+            for (char c = 'а'; c <= 'я'; c++) {
+                if (checkOriginalText.charAt(i) == c) {
+                    textLength++;
+                    if (checkOriginalText.charAt(i) == checkDecryptedText.charAt(i)) {
+                        numOfGoodChars++;
                     }
                 }
-                bigramIntegerCounter = 0;
-            } catch (StringIndexOutOfBoundsException e){
-                break;
             }
         }
-        System.out.println("Всего биграмм: " + fullBigramsInteger);
-        for (String string: alBigramKeys){
-            System.out.print(string + ": " + mapBigramInteger.get(string) + "\n");
-        }
-        System.out.println();
+        System.out.println(textLength);
+        System.out.println(numOfGoodChars);
+        percent = ((float)numOfGoodChars / (float) textLength) * 100;
+        System.out.println("///////////////////////////////////////////////////");
+        System.out.println ("Точность криптоанализа " + percent + "%");
     }
 
-    private void setNumOfEveryBigram (Map mapBigramInteger, int[] numOfEveryBigram){
-        ArrayList<Integer> alBigram = new ArrayList<>(mapBigramInteger.values());
-        int counter = 0;
-        for (int num: alBigram){
-            numOfEveryBigram[counter] = num;
-            counter++;
+    void readText(String filePath, StringBuilder readedText){
+        int readedChar;
+        try (FileReader fin = new FileReader(filePath)){
+            do{
+                readedChar = fin.read();
+                if (readedChar != -1){
+                    readedText.append((char) readedChar);
+                }
+            } while (readedChar != -1);
+        } catch (IOException e){
+            e.printStackTrace();
         }
-    }
-
-    private void setBigramFreq (Map mapBigramFreq, int numOfBigram, int[] numOfEveryBigram){
-        String key;
-        int counter = 0;
-        System.out.println();
-        for (char startChar = 'а'; startChar <= 'я'; startChar++){
-            for (char endChar = 'а'; endChar <= 'я'; endChar++){
-                key = "" + startChar + endChar;
-                mapBigramFreq.replace(key, (float) numOfEveryBigram[counter] / numOfBigram);
-                System.out.print(key + ": " + mapBigramFreq.get(key) + "\n");
-            }
-        }
-
-
     }
 }

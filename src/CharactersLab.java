@@ -1,7 +1,4 @@
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class CharactersLab {
     private static CharactersLab sCharactersLab;
@@ -9,34 +6,23 @@ public class CharactersLab {
     StringBuilder originalFullText = new StringBuilder();
     StringBuilder originalChapterText = new StringBuilder();
 
-    String toLowerOriginalText = "";
-    String toLowerChapterText = "";
-    String toLowerEncryptedChapterText = "";
-
     StringBuilder encryptedText = new StringBuilder();
     StringBuilder decryptedText = new StringBuilder();
 
     int numOfAllTextChars;
     int numOfAllChapterChars;
     int numOfAllEncryptedChapterChars;
-    int numOfAllTextBigrams;
-    int numOfAllEncryptedBigrams;
 
     int[] numOfEveryTextChar = new int[32];
     int[] numOfEveryChapterChar = new int[32];
     int[] numOfEveryEncryptedChapterChar = new int[32];
-    int[] numOfEveryFullBigram = new int[1024];
-    int[] numOfEveryEncryptBigram = new int[1024];
 
     char[] originalAlphabet = new char[32];
     char[] newAlphabet = new char[32];
     char[] decryptedFreqAlphabet = new char[32];
 
     Map <Character, Integer> mapFullCharacterInteger = new TreeMap<>();
-    Map <String, Integer> mapFullBigramInteger = new TreeMap<>();
     Map <Character, Float> mapFullCharacterFreq = new TreeMap<>();
-    Map<String, Float> mapFullBigramFreq = new TreeMap<>();
-    Map<Float, String> mapFullFreqBigram = new TreeMap<>(Comparator.reverseOrder());
     Map <Float, Character> mapTextFreqCharacter = new TreeMap<>(Comparator.reverseOrder());
 
     Map <Character, Integer> mapChapterCharacterInteger = new TreeMap<>();
@@ -44,9 +30,6 @@ public class CharactersLab {
     Map <Float, Character> mapFreqChapter = new TreeMap<>(Comparator.reverseOrder());
 
     Map <Character, Integer> mapEncryptedCharacterInteger = new TreeMap<>();
-    Map<String, Integer> mapEncryptedBigramInteger = new TreeMap<>();
-    Map<String, Float> mapEncryptedBigramFreq = new TreeMap<>();
-    Map<Float, String> mapEncryptedFreqBigram = new TreeMap<>(Comparator.reverseOrder());
     Map <Character, Float> mapEncryptedChapterFreq = new TreeMap<>();
     Map <Float, Character> mapEncryptedFreqChapter = new TreeMap<>(Comparator.reverseOrder());
 
@@ -57,53 +40,50 @@ public class CharactersLab {
         return sCharactersLab;
     }
 
-    public int getNumOfAllTextChars() {
-        return numOfAllTextChars;
-    }
+    public void setDataOfText(StringBuilder text, int numOfAllChars, int[] numOfEveryChar, Map mapOfChars, boolean printDate){
+        String toLowerText = text.toString().toLowerCase();
+        numOfAllChars = setNumOfAllTextChars(toLowerText, numOfAllChars);
+        setNumOfEveryChar(toLowerText, numOfEveryChar, mapOfChars);
 
-    public int getNumOfAllChapterChars(){
-        return numOfAllChapterChars;
-    }
-
-    public int getNumOfAllEncryptedChapterChars() {
-        return numOfAllEncryptedChapterChars;
-    }
-
-    public Map<Character, Integer> getMapFullCharacterInteger() {
-        return mapFullCharacterInteger;
-    }
-
-    public Map<Character, Integer> getMapChapterCharacterInteger() {
-        return mapChapterCharacterInteger;
-    }
-
-    public Map<Character, Integer> getMapEncryptedCharacterInteger() {
-        return mapEncryptedCharacterInteger;
-    }
-
-    public void setMapBigramInteger (Map bigramInteger){
-        for (char startChar = 'а'; startChar <= 'я'; startChar++){
-            for (char endChar = 'а'; endChar <= 'я'; endChar++){
-                String startEndChar = "" + startChar + endChar;
-                bigramInteger.put(startEndChar, 0);
-            }
+        if (printDate){
+            getNumOfAllChars(numOfAllChars);
+            getMapOfEveryChar(mapOfChars);
         }
     }
 
-    public void setMapBigramFloat (Map bigramFloat){
-        for (char startChar = 'а'; startChar <= 'я'; startChar++){
-            for (char endChar = 'а'; endChar <= 'я'; endChar++){
-                String startEndChar = "" + startChar + endChar;
-                bigramFloat.put(startEndChar, 0.0);
-            }
+    private void getNumOfAllChars(int numOfAllChars){
+        System.out.println("Num of all chars: " + numOfAllChars);
+    }
+
+    private void getMapOfEveryChar(Map mapOfEveryChar){
+        Set<Map.Entry<Character, Integer>> set = mapOfEveryChar.entrySet();
+        for (Map.Entry<Character, Integer> map: set){
+            System.out.print(map.getKey() + ": " + map.getValue() + "\n");
         }
     }
 
-    public Map<String, Integer> getMapFullBigramInteger() {
-        return mapFullBigramInteger;
+    private int setNumOfAllTextChars(String text, int numOfAllChars){
+        for (int i = 0; i < text.length(); i++){
+            for (char c = 'а'; c <= 'я'; c++){
+                if (c == text.charAt(i)){
+                    numOfAllChars++;
+                    break;
+                }
+            }
+        }
+        return numOfAllChars;
     }
 
-    public Map<String, Integer> getMapEncryptedBigramInteger() {
-        return mapEncryptedBigramInteger;
+    private void setNumOfEveryChar(String text, int[] numOfEveryChar, Map mapOfChars){
+        int j = 0;
+        for (char c = 'а'; c <= 'я'; c++){
+            for (int i = 0; i < text.length(); i++){
+                if (c == text.charAt(i)){
+                    numOfEveryChar[j]++;
+                }
+            }
+            mapOfChars.put(c, numOfEveryChar[j]);
+            j++;
+        }
     }
 }
