@@ -14,62 +14,21 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         CharactersLab charactersLab = CharactersLab.get();
-        /*int readedChar;
-        try (FileReader finFullText = new FileReader("res/Voina_i_mir.txt");
-             FileReader finChapterText = new FileReader("res/test.txt")){
-            do {
-                readedChar = finFullText.read();
-                if (readedChar != -1) {
-                    charactersLab.originalFullText.append((char) readedChar);
-                }
-            } while (readedChar != -1);
-            do {
-                readedChar = finChapterText.read();
-                if (readedChar != -1){
-                    charactersLab.originalChapterText.append((char) readedChar);
-                }
-            } while (readedChar != -1);
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        */
 
         main.readText("res/Voina_i_mir.txt", charactersLab.originalFullText);
-        main.readText("res/test.txt", charactersLab.originalChapterText);
+        main.readText("res/Tom 1 Chapter 9.txt", charactersLab.originalChapterText);
 
         charactersLab.setDataOfText(charactersLab.originalFullText,
-                charactersLab.numOfAllTextChars,
-                charactersLab.numOfEveryTextChar,
-                charactersLab.mapFullCharacterInteger,
-                true);
+                charactersLab.mapFullCharacterFreq,
+                true,
+                "Data of original text");
 
+        charactersLab.setDataOfText(charactersLab.originalChapterText,
+                charactersLab.mapChapterFreq,
+                true,
+                "Data of chapter text");
 
-
-        // Работа по символам оригинального текста всего произведения
-        /*System.out.println("Num of all chars: " + charactersLab.getNumOfAllTextChars());
-
-        main.setFreqMap(charactersLab.mapFullCharacterFreq, charactersLab.numOfEveryTextChar, charactersLab.numOfAllTextChars);
-        main.setValueMap(charactersLab.mapFullCharacterFreq, charactersLab.mapTextFreqCharacter);
-
-        // Получаем получившиеся данные по оригинальному тексту всего произведения
-        main.getNumOfEveryChar(charactersLab.getMapFullCharacterInteger(), true);
-        main.getNumOfEveryChar(charactersLab.mapFullCharacterFreq, true);
-        main.getNumOfEveryChar(charactersLab.mapTextFreqCharacter, true);
-
-        System.out.println("///////////////////////////////////////////////////");
-
-        // Работа с символами главы произведения
-        main.setFreqMap(charactersLab.mapChapterFreq, charactersLab.numOfEveryChapterChar, charactersLab.numOfAllChapterChars);
-        main.setValueMap(charactersLab.mapChapterFreq, charactersLab.mapFreqChapter);
-
-        // Получаем данные по главе произведения
-        System.out.println("Num of all chapter chars: " + charactersLab.getNumOfAllChapterChars());
-        main.getNumOfEveryChar(charactersLab.getMapChapterCharacterInteger(), true);
-        main.getNumOfEveryChar(charactersLab.mapChapterFreq, true);
-        main.getNumOfEveryChar(charactersLab.mapFreqChapter, true);
-
-        System.out.println("///////////////////////////////////////////////////");
+        /*
 
         // Получаем алфавит, шифруем его шифром Цезаря и зашифровываем текст
         main.setOriginalAlphabet();
@@ -108,36 +67,15 @@ public class Main {
 
         main.checkText(charactersLab.originalChapterText, charactersLab.decryptedText);
 
-        */
+
 
    }
 
 
 
-    private void getNumOfEveryChar(Map map, boolean startPrintLoop) {
-        if (startPrintLoop) {
-            Set<Map.Entry<Character, Integer>> set = map.entrySet();
-            for (Map.Entry<Character, Integer> me : set) {
-                System.out.print(me.getKey() + ": " + me.getValue() + "\n");
-            }
-            System.out.println();
-        } else {
-            for (Character c = 'а'; c <= 'я'; c++) {
-                map.get(c);
-            }
-        }
-    }
 
-    private void setFreqMap(Map mapFreq, int[] numOfChar, int numAllChars){
-        char c = 'а';
-        for (int i = 0; i < numOfChar.length; i++){
-            Float charFreq = new Float((float) numOfChar[i] / numAllChars * 100);
-            charFreq = Math.round(charFreq * 100) / 100.0f;
-            mapFreq.put(c, charFreq);
-            c++;
-        }
 
-    }
+
 
     private void setOriginalAlphabet(){
         int i = 0;
@@ -276,16 +214,27 @@ public class Main {
         System.out.println("///////////////////////////////////////////////////");
         System.out.println ("Точность криптоанализа " + percent + "%");
     }
+    */
 
-    void readText(String filePath, StringBuilder readedText){
+    }
+
+    void readText (String filePath, StringBuilder readedText){
         int readedChar;
-        try (FileReader fin = new FileReader(filePath)){
-            do{
+        try (FileReader fin = new FileReader(filePath)) {
+            do {
                 readedChar = fin.read();
-                if (readedChar != -1){
+                if (readedChar != -1) {
                     readedText.append((char) readedChar);
                 }
             } while (readedChar != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void writeLogs (StringBuilder logs){
+        try (FileWriter fout = new FileWriter("res/logs.txt")){
+            fout.write(logs.toString());
         } catch (IOException e){
             e.printStackTrace();
         }

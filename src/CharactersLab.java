@@ -8,30 +8,18 @@ public class CharactersLab {
 
     StringBuilder encryptedText = new StringBuilder();
     StringBuilder decryptedText = new StringBuilder();
-
-    int numOfAllTextChars;
-    int numOfAllChapterChars;
-    int numOfAllEncryptedChapterChars;
-
-    int[] numOfEveryTextChar = new int[32];
-    int[] numOfEveryChapterChar = new int[32];
-    int[] numOfEveryEncryptedChapterChar = new int[32];
+    
+    StringBuilder logs = new StringBuilder();
 
     char[] originalAlphabet = new char[32];
     char[] newAlphabet = new char[32];
     char[] decryptedFreqAlphabet = new char[32];
-
-    Map <Character, Integer> mapFullCharacterInteger = new TreeMap<>();
+    
     Map <Character, Float> mapFullCharacterFreq = new TreeMap<>();
-    Map <Float, Character> mapTextFreqCharacter = new TreeMap<>(Comparator.reverseOrder());
 
-    Map <Character, Integer> mapChapterCharacterInteger = new TreeMap<>();
     Map <Character, Float> mapChapterFreq = new TreeMap<>();
-    Map <Float, Character> mapFreqChapter = new TreeMap<>(Comparator.reverseOrder());
 
-    Map <Character, Integer> mapEncryptedCharacterInteger = new TreeMap<>();
     Map <Character, Float> mapEncryptedChapterFreq = new TreeMap<>();
-    Map <Float, Character> mapEncryptedFreqChapter = new TreeMap<>(Comparator.reverseOrder());
 
     public static CharactersLab get(){
         if (sCharactersLab == null){
@@ -40,41 +28,54 @@ public class CharactersLab {
         return sCharactersLab;
     }
 
-    public void setDataOfText(StringBuilder text, int numOfAllChars, int[] numOfEveryChar, Map mapOfChars, boolean printDate){
+    public void setDataOfText(StringBuilder text, Map mapOfChars, boolean writeDateToFile, String logText){
+        logs.append(logText + "\n");
+        int numOfAllChars;
+        int[] numOfEveryChar = new int[32];
         String toLowerText = text.toString().toLowerCase();
-        numOfAllChars = setNumOfAllTextChars(toLowerText, numOfAllChars);
-        setNumOfEveryChar(toLowerText, numOfEveryChar, mapOfChars);
+        numOfAllChars = setNumOfAllTextChars(toLowerText);
+        setNumOfEveryChar(toLowerText, numOfEveryChar,numOfAllChars, mapOfChars);
 
-        if (printDate){
-            getNumOfAllChars(numOfAllChars);
-            getMapOfEveryChar(mapOfChars);
+        if (writeDateToFile){
+            logs.append(getNumOfAllChars(numOfAllChars));
+            logs.append(getMapOfEveryChar(mapOfChars, numOfEveryChar));
+            logs.append("/////////////////////////////////////////////\n");
+            Main.writeLogs(logs);
         }
+
     }
 
-    private void getNumOfAllChars(int numOfAllChars){
-        System.out.println("Num of all chars: " + numOfAllChars);
+    private String getNumOfAllChars(int numOfAllChars){
+        return ("Num of all chars: " + numOfAllChars + "\n");
     }
 
-    private void getMapOfEveryChar(Map mapOfEveryChar){
+    private StringBuilder getMapOfEveryChar(Map mapOfEveryChar, int[] numOfEveryChar){
+        StringBuilder logStr = new StringBuilder();
+        int counter = 0;
         Set<Map.Entry<Character, Integer>> set = mapOfEveryChar.entrySet();
         for (Map.Entry<Character, Integer> map: set){
-            System.out.print(map.getKey() + ": " + map.getValue() + "\n");
+            logStr.append(map.getKey() + ": " + map.getValue()
+                            + " (" + numOfEveryChar[counter] + ")"
+                            + "\n");
+            counter++;
         }
+        return logStr;
     }
 
-    private int setNumOfAllTextChars(String text, int numOfAllChars){
+    private int setNumOfAllTextChars(String text){
+        int num = 0;
         for (int i = 0; i < text.length(); i++){
             for (char c = 'а'; c <= 'я'; c++){
                 if (c == text.charAt(i)){
-                    numOfAllChars++;
+                    num++;
                     break;
                 }
             }
         }
-        return numOfAllChars;
+        return num;
     }
 
-    private void setNumOfEveryChar(String text, int[] numOfEveryChar, Map mapOfChars){
+    private void setNumOfEveryChar(String text, int[] numOfEveryChar,int numOfAllChar, Map mapOfChars){
         int j = 0;
         for (char c = 'а'; c <= 'я'; c++){
             for (int i = 0; i < text.length(); i++){
@@ -82,8 +83,16 @@ public class CharactersLab {
                     numOfEveryChar[j]++;
                 }
             }
-            mapOfChars.put(c, numOfEveryChar[j]);
+            mapOfChars.put(c, rounding(numOfAllChar, numOfEveryChar[j]));
             j++;
         }
     }
+    
+    private float rounding(int numOfAllChars, int numOfNeededChar){
+        Float charFreq = new Float((float) numOfNeededChar / numOfAllChars * 100);
+        charFreq = Math.round(charFreq * 100) / 100.0f;
+        return charFreq;
+    }
+
+
 }
