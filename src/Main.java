@@ -46,6 +46,9 @@ public class Main {
 
         charactersLab.setBigramsAlphabet(charactersLab.listFullBigrams, charactersLab.listEncryptedBigrams, charactersLab.decryptedBigramAlphabet);
 
+        charactersLab.decryptTextByBigrams(charactersLab.encryptedText, charactersLab.newAlphabet, charactersLab.decryptedBigramAlphabet);
+        main.checkText(charactersLab.originalChapterText, charactersLab.decryptedByBigramsText);
+
     }
 
     private void checkText(StringBuilder originalChapterText, StringBuilder decryptedText){
@@ -65,7 +68,7 @@ public class Main {
             }
         }
         percent = ((float)numOfGoodChars / (float) textLength) * 100;
-        System.out.println("///////////////////////////////////////////////////");
+        System.out.println("\n///////////////////////////////////////////////////");
         System.out.println ("Точность криптоанализа " + percent + "%");
     }
 

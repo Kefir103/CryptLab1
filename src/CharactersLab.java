@@ -8,6 +8,7 @@ public class CharactersLab {
 
     StringBuilder encryptedText = new StringBuilder();
     StringBuilder decryptedText = new StringBuilder();
+    StringBuilder decryptedByBigramsText = new StringBuilder();
     
     StringBuilder logs = new StringBuilder();
 
@@ -107,6 +108,29 @@ public class CharactersLab {
             }
         }
         Main.writeToFile("res/decryptedByFrequesText.txt", decryptedText);
+    }
+
+    public void decryptTextByBigrams(StringBuilder encryptedText, char[] encryptedAlphabet, char[] decryptedBigramAlphabet){
+        decryptedByBigramsText.append(encryptedText.toString());
+        Character character;
+        for (int i = 0; i < encryptedText.length(); i++){
+            for (int j = 0; j < decryptedBigramAlphabet.length; j++){
+                if (Character.isUpperCase(decryptedByBigramsText.charAt(i))){
+                    character = new Character(decryptedByBigramsText.charAt(i));
+                    if (Character.toLowerCase(character) == encryptedAlphabet[j]){
+                        character = decryptedBigramAlphabet[j];
+                        character = Character.toUpperCase(character);
+                        decryptedByBigramsText.setCharAt(i, character);
+                        break;
+                    }
+                }
+                if (decryptedByBigramsText.charAt(i) == encryptedAlphabet[j]){
+                    decryptedByBigramsText.setCharAt(i, decryptedBigramAlphabet[j]);
+                    break;
+                }
+            }
+        }
+        Main.writeToFile("res/decryptedTextByBigrams.txt", decryptedByBigramsText);
     }
 
     private String getNumOfAllChars(int numOfAllChars){
@@ -298,13 +322,18 @@ public class CharactersLab {
         int maxValue = decryptedIntBigrams[0][0];
         for (int i = 0; i < decryptedBigramAlphabet.length; i++){
             for (int j = 0; j < decryptedBigramAlphabet.length; j++){
-                if (decryptedIntBigrams[i][j] > maxValue){
+                if ((decryptedIntBigrams[i][j] >= maxValue) && (decryptedIntBigrams[i][j] > 3)){
                     maxValue = decryptedIntBigrams[i][j];
                     maxIndex = j;
-                    decryptedBigramAlphabet[i] = originalAlphabet[maxIndex];
+                    decryptedBigramAlphabet[i] = newAlphabet[maxIndex];
                 }
             }
             maxValue = decryptedIntBigrams[i][0];
+        }
+        for (int i = 0; i < decryptedBigramAlphabet.length; i++){
+            if (decryptedBigramAlphabet[i] == '\u0000'){
+                decryptedBigramAlphabet[i] = decryptedFreqAlphabet[i];
+            }
         }
         System.out.println("///////////////////////////////////////");
         for (int i = 0; i < decryptedBigramAlphabet.length; i++){
@@ -313,7 +342,7 @@ public class CharactersLab {
     }
 
     private void setBigramsTable(ArrayList listFullBigrams, ArrayList listEncryptedBigrams) {
-        for (int i = 0; i < 10; i++){
+        for (int i = 0; i < listFullBigrams.size() / 4; i++){
             char firstCharFullBig = listFullBigrams.get(i).toString().charAt(0);
             char secondCharFullBig = listFullBigrams.get(i).toString().charAt(1);
             char firstCharEncBig = listEncryptedBigrams.get(i).toString().charAt(0);
